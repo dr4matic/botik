@@ -7,10 +7,11 @@ using Telegram.Bot.Types;
 
 namespace botik
 {
-    class UH : IUpdateHandler
+    public class UpdateHandler : IUpdateHandler
     {
         public Task HandlePollingErrorAsync(ITelegramBotClient botClient, Exception exception, CancellationToken cancellationToken)
         {
+            return Task.CompletedTask;
         }
 
         public async Task HandleUpdateAsync(ITelegramBotClient botClient, Update update, CancellationToken cancellationToken)
@@ -20,7 +21,16 @@ namespace botik
             await botClient.SendTextMessageAsync(
                 chatId: x.Id,
                 text: m,
-                replyToMessageId: update.Message.MessageId);
+                replyToMessageId: update.Message.MessageId,
+                cancellationToken: cancellationToken);
+
+            for(; ; )
+            {
+                if (cancellationToken.IsCancellationRequested)
+                {
+                    break;
+                }
+            }
         }
     }
 }
