@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Threading.Tasks;
 using Telegram.Bot;
+using Telegram.Bot.Polling;
 using Telegram.Bot.Types;
 
 namespace botik
@@ -11,14 +12,24 @@ namespace botik
         {
             var botClient = new TelegramBotClient("1669922565:AAGHG0JYNmGXiq-vb09kD9m1FymEl3x0vJk");
 
-            int offset = 0;
+            botClient.StartReceiving<UH>(new ReceiverOptions
+            {
+                AllowedUpdates = new Telegram.Bot.Types.Enums.UpdateType[]
+            {
+                Telegram.Bot.Types.Enums.UpdateType.CallbackQuery,
+                 Telegram.Bot.Types.Enums.UpdateType.Message
+            }
+            });
+
+            Console.ReadLine();
+            /*int offset = 0;
             while (true)
             {
                 var update = await botClient.GetUpdatesAsync(offset);
                 ProcessUpdates(update, botClient);
                 await Task.Delay(1000);
                 offset += update.Length;
-            }
+            }*/
         }
 
         public static async void ProcessUpdates(Update[] updates, TelegramBotClient botClient)
