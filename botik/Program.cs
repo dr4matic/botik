@@ -15,25 +15,37 @@ namespace botik
             while (true)
             {
                 var update = await botClient.GetUpdatesAsync(offset);
-                await ProcessUpdates(update, botClient);
+                ProcessUpdates(update, botClient);
                 await Task.Delay(1000);
                 offset += update.Length;
             }
         }
 
-        public static async Task ProcessUpdates(Update[] updates, TelegramBotClient botClient)
+        public static async void ProcessUpdates(Update[] updates, TelegramBotClient botClient)
         {
-            foreach (var update in updates)
+            if (updates is not { Length: >0})
             {
-                ///
-                var x = update.Message.Chat;
-                var m = update.Message.Text;
-                await botClient.SendTextMessageAsync(
-                    chatId: x.Id, 
-                    text: m,
-                    replyToMessageId: update.Message.MessageId);
-                await Task.Delay(100);
+                return;
             }
+
+            try
+            {
+                foreach (var update in updates)
+                {
+                    ///
+                    var x = update.Message.Chat;
+                    var m = update.Message.Text;
+                    await botClient.SendTextMessageAsync(
+                        chatId: x.Id,
+                        text: m,
+                        replyToMessageId: update.Message.MessageId);
+                    await Task.Delay(100);
+                }
+            }
+            catch(Exception e)
+            {
+                //
+            }            
         }
 
     }
